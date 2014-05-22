@@ -1,0 +1,24 @@
+---
+- name: overide dhcp nameserver
+  template: >
+    dest=/etc/dhcp/dhclient.conf
+    src=dhclient.j2
+    owner=root
+    group=root
+    mode=0644
+  when: networking_domain_name_server is defined
+  notify:
+    - restart networking
+  tags:
+    - networking
+
+- name: update resolvconf base file
+  lineinfile:
+    dest=/etc/resolvconf/resolv.conf.d/base
+    line="nameserver {{ networking_domain_name_server }}"
+  when: networking_domain_name_server is defined
+  notify:
+    - restart resolvconf
+  tags:
+    - networking
+

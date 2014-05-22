@@ -1,0 +1,9 @@
+---
+- name: restart networking
+  shell: nohup sh -c "invoke-rc.d networking stop; sleep 2; invoke-rc.d networking start"
+
+- name: restart resolvconf
+  service:
+    name=resolvconf
+    enabled=yes
+    state=restarted
