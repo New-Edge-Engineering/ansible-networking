@@ -2,7 +2,7 @@
 galaxy_info:
   author: Matthew Green
   company: New Edge Engineering
-  description: install ansible
+  description: configure dns client to communicate with specific dns server.
   min_ansible_version: 1.5
   license: MIT
   platforms:
