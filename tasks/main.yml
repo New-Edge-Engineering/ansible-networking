@@ -17,8 +17,13 @@
     dest=/etc/resolvconf/resolv.conf.d/base
     line="nameserver {{ networking_domain_name_server }}"
   when: networking_domain_name_server is defined
-  notify:
-    - restart resolvconf
+  register: new_nameserver
   tags:
     - networking
 
+- name: restart resolvconf
+  service:
+    name: resolvconf
+    enabled: yes
+    state: restarted
+  when: new_nameserver|changed
