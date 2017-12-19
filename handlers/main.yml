@@ -1,3 +1,10 @@
 ---
-- name: restart networking
-  shell: nohup sh -c "invoke-rc.d networking stop; sleep 2; invoke-rc.d networking start"
+- name: restart Debian networking
+  service:
+    name: networking
+    state: restarted
+
+- name: restart RedHat networking
+  service:
+    name: network
+    state: restarted

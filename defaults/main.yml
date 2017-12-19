@@ -1,2 +1,3 @@
 ---
 networking_domain_name_server: null # The IP address of the dns server.
+networking_interface: eth0
