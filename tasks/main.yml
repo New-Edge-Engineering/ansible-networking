@@ -1,0 +1,39 @@
+---
+- name: overide dhcp nameserver
+  template:
+    dest: /etc/dhcp/dhclient.conf
+    src: dhclient.j2
+    owner: root
+    group: root
+    mode: 0644
+  register: dhcp_nameserver
+  when: networking_domain_name_server is defined
+  notify:
+    - "restart {{ ansible_os_family }} networking"
+  tags:
+    - networking
+
+- name: Ensure DNS is in resolvconf base
+  lineinfile:
+    dest: /etc/resolvconf/resolv.conf.d/base
+    line: "nameserver {{ networking_domain_name_server }}"
+  when: networking_domain_name_server is defined and ansible_os_family == 'Debian'
+  register: new_nameserver
+  tags:
+    - networking
+
+- name: Ensure DNS is in ifcfg-ethN
+  lineinfile:
+    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ networking_interface }}"
+    regexp: "^DNS1=.*"
+    line: "DNS1={{ networking_domain_name_server }}"
+  register: new_nameserver
+  when: networking_domain_name_server is defined and ansible_os_family == 'RedHat'
+  notify:
+    - "restart {{ ansible_os_family }} networking"
+  tags:
+    - networking
+
+- name: ensuring services are restarted
+  meta: flush_handlers
+  when: dhcp_nameserver|changed and new_nameserver|changed

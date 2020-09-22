@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Matthew Green
+  company: New Edge Engineering
+  description: configure dns client to communicate with specific dns server.
+  min_ansible_version: 1.5
+  license: MIT
+  platforms:
+  - name: Ubuntu
+    versions:
+    - precise
+  categories:
+  - networking
+
+dependencies: []
