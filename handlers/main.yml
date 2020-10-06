@@ -1,8 +1,8 @@
 ---
 - name: restart Debian networking
-  service:
-    name: networking
-    state: restarted  # Restart may change the IP Address causing Ansible to hang.
+  command: service networking reload
+  args:
+    warn: false
 
 - name: restart RedHat networking
   service:

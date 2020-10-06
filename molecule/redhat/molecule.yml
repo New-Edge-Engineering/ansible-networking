@@ -4,7 +4,6 @@ dependency:
 
 driver:
   name: vagrant
-  provider: ${MOLECULE_PROVIDER:-"VBox"}
 
 platforms:
   - name: centos7

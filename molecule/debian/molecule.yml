@@ -4,7 +4,6 @@ dependency:
 
 driver:
   name: vagrant
-  provider: ${MOLECULE_PROVIDER:-"VBox"}
 
 platforms:
   - name: ubuntu16.04  # Xenial
@@ -47,7 +46,6 @@ provisioner:
   log: true
   options:
     become: true
-    vvv: true
   inventory:
     group_vars:
       all:
