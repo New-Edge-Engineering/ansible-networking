@@ -1,0 +1,31 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+    - name: find dhclient
+      lineinfile: 
+        dest: "/etc/dhcp/dhclient.conf"
+        regexp: "^supersede domain-name-servers {{ networking_domain_name_server }};$"
+        state: absent
+      become: true
+      check_mode: true
+      register: dhclient_presence
+    - name: find networking_domain_name_server
+      lineinfile: 
+        dest: "/etc/sysconfig/network-scripts/ifcfg-eth0"
+        regexp: "^DNS1={{ networking_domain_name_server }}$"
+        state: absent
+      check_mode: true
+      register: networking_domain_name_server_presence
+    - debug:
+        var: dhclient_presence
+    - debug:
+        var: networking_domain_name_server_presence
+    - name: dhclient assertion
+      assert:
+        that: dhclient_presence.found == 1
+    - name: networking domain name server assertion
+      assert:
+        that: networking_domain_name_server_presence.found == 1

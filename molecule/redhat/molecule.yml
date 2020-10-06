@@ -1,0 +1,38 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  - name: centos7
+    # Dictionary of `config` options. Note that string values need to be explicitly enclosed in quotes.
+    config_options:
+      ssh.keep_alive: yes
+    box: generic/centos7
+    memory: 512
+    cpus: 1
+    # Dictionary of options passed to the provider
+    provider_options:
+      video_type: "vga"
+    provision: no
+  - name: centos6
+    config_options:
+      ssh.keep_alive: yes
+    box: generic/centos6
+    memory: 512
+    cpus: 1
+    # Dictionary of options passed to the provider
+    provider_options:
+      video_type: "vga"
+    provision: no
+provisioner:
+  name: ansible
+  log: true
+  options:
+    become: true
+  inventory:
+    group_vars:
+      all:
+        networking_domain_name_server: "192.168.1.1"
+verifier:
+  name: ansible
