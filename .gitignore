@@ -1,0 +1,6 @@
+# Python generate files
+molecule/*/tests/__pycache__
+molecule/*/pytestdebug.log
+
+# Python virtual environment
+.ve

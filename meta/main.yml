@@ -1,15 +1,21 @@
 ---
 galaxy_info:
+  role_name: networking
   author: Matthew Green
   company: New Edge Engineering
   description: configure dns client to communicate with specific dns server.
-  min_ansible_version: 1.5
+  min_ansible_version: 2.10
   license: MIT
   platforms:
+  - name: EL
+    versions:
+    - 7
+    - 6
   - name: Ubuntu
     versions:
     - precise
-  categories:
+    - trusty
+  galaxy_tags:
   - networking
 
 dependencies: []

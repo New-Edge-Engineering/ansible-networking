@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  pre_tasks:
+    - name: "Install libselinux-python"
+      package:
+        name: libselinux-python
+      when: ansible_selinux.status != "enabled"
+  tasks:
+    - name: "Include ansible-networking"
+      include_role:
+        name: "ansible-networking"

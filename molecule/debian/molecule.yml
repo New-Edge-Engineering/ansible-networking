@@ -1,0 +1,52 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  - name: ubuntu16.04  # Xenial
+    # Dictionary of `config` options. Note that string values need to be explicitly enclosed in quotes.
+    config_options:
+      ssh.keep_alive: yes
+    # box: ubuntu/xenial64
+    box: roboxes/ubuntu1604
+    memory: 512
+    cpus: 1
+    # Dictionary of options passed to the provider
+    provider_options:
+      video_type: "vga"
+    provision: no
+  # - name: ubuntu14.04
+  #   # List of dictionaries mapped to `config.vm.network`
+  #   # interfaces:
+  #   #   # `network_name` is the required identifier, all other keys map to arguments.
+  #   #   - network_name: forwarded_port
+  #   #     guest: 80
+  #   #     host: 8080
+  #   # List of raw Vagrant `config` options
+  #   # instance_raw_config_args:
+  #     # - 'vagrant.plugins = ["vagrant-libvirt"]'
+  #   # Dictionary of `config` options. Note that string values need to be explicitly enclosed in quotes.
+  #   config_options:
+  #     ssh.keep_alive: yes
+  #   box: ubuntu/trusty64
+  #   memory: 512
+  #   cpus: 1
+  #   # Dictionary of options passed to the provider
+  #   provider_options:
+  #     video_type: "vga"
+  #   # List of raw provider options provider_raw_config_args:
+  #   #   - "cpuset = '2'"
+  #   provision: no
+provisioner:
+  name: ansible
+  log: true
+  options:
+    become: true
+    vvv: true
+  inventory:
+    group_vars:
+      all:
+        networking_domain_name_server: "192.168.1.1"
+verifier:
+  name: ansible
