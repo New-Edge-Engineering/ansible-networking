@@ -1,8 +1,11 @@
 ---
 dependency:
   name: galaxy
+
 driver:
   name: vagrant
+  provider: ${MOLECULE_PROVIDER:-"VBox"}
+
 platforms:
   - name: centos7
     # Dictionary of `config` options. Note that string values need to be explicitly enclosed in quotes.
@@ -25,6 +28,7 @@ platforms:
     provider_options:
       video_type: "vga"
     provision: no
+
 provisioner:
   name: ansible
   log: true
@@ -34,5 +38,6 @@ provisioner:
     group_vars:
       all:
         networking_domain_name_server: "192.168.1.1"
+
 verifier:
   name: ansible
