@@ -1,0 +1,64 @@
+---
+dist: bionic
+
+language: minimal
+
+branches:
+  only:
+    - master
+
+env:
+  jobs:
+    - secure: "ntp3BBxM1ai7A3lB3Kz1/XIt9Gzh4AlIxp+2gQkLs3A2ZGvUzch2d9yioLYWCIEPKEKcc7AyxuqOgELfD5F4dGQgG+2SRONui/m6NMecr0Rus3zKbAIvu+p9l9POcrTCS78c4GX+msUUdEUc43nb0wmBa32vphCdzHpuay87zjmRN/nUmnMqJvOXfZr2xMBqrjs8pkk86cIXXOnqiwM91aH8z9cwnRp/DUmbgBtcC3nT9JOIfqCJvWe7yfN2NvCxC0lV60wChKm6YDo14A7cPWbDmE6Gbc4/AnRFMHN8xvZ+Iagbthu9SeF4yKVcW6Bqd/v8qEdC+sF5L2hFn3uxw0hWpb9K5gAp6TseX1t6AkUblDirEt2LAUYEKaWW+evU3iOdFEUCI72FfcgdqlGgB0AtY5r5XAED7QP20qdm1rdRRV7U5gtLAfhPOTyo5m4/kxjMHj2vg0YYwD+Pjwq/PVmP902BhQ/6aMpeoVebzaOSmSXpmeUt4rWlN+vAlgxoipBFv0jIZWg+HWJRVDtbmnKWRpAV97FOZZzS2e4cCy93TeoVglegJoODNu13Jdn4C/3s+XwWepu8B4T8Ndmnt9CrtCRvfV1wNiCiGeT25RzPalSKc/LpeAkXz77GLz4fnmCnylrsLWcv4CGlbtzwDBWadwoP0jQyuDK0DFtiSyk=" # contains GH_TOKEN
+  matrix:
+    - MOLECULE_SCENARIO_NAME="centos7"
+    - MOLECULE_SCENARIO_NAME="cento6"
+    - MOLECULE_SCENARIO_NAME="ubuntu16.04"
+
+matrix:
+  allow_failures:
+    - env: MOLECULE_SCENARIO_NAME="ubuntu16.04"
+
+# before_install:
+install:
+  - |
+    curl -Os https://releases.hashicorp.com/vagrant/2.2.7/vagrant_2.2.7_x86_64.deb
+    curl -Os https://releases.hashicorp.com/vagrant/2.2.7/vagrant_2.2.7_SHA256SUMS
+    curl -Os https://releases.hashicorp.com/vagrant/2.2.7/vagrant_2.2.7_SHA256SUMS.sig
+    gpg --receive-key 51852D87348FFC4C
+    gpg --verify vagrant_2.2.7_SHA256SUMS.sig vagrant_2.2.7_SHA256SUMS
+    sha256sum -c vagrant_2.2.7_SHA256SUMS 2>&1 | grep OK
+    sudo apt-get update && sudo apt-get install -y bridge-utils dnsmasq-base ebtables libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
+    sudo dpkg -i vagrant_2.2.7_x86_64.deb
+    sudo vagrant plugin install vagrant-libvirt
+
+  - |
+    sudo apt-get -y purge python3-openssl && sudo apt-get -y autoremove
+    sudo apt-get update && sudo apt-get install -y ca-certificates curl gcc iproute2 python3 python3-dev sudo
+    curl -skL https://bootstrap.pypa.io/get-pip.py | sudo -H python3
+    sudo -H pip3 install --upgrade --ignore-installed molecule molecule-vagrant ansible-lint
+
+# install:
+#   - |
+#     export ROLE=$(echo $TRAVIS_REPO_SLUG | sed 's/^.*\/ansible-role-/\//g')
+#     mkdir -p $HOME/.ansible/roles
+#     ln -s $TRAVIS_BUILD_DIR $HOME/.ansible/roles/$ROLE
+
+jobs:
+  include:
+    - stage: test
+      script:
+        - molecule --version
+        - ansible --version
+        - molecule test --all
+    - stage: tag
+      if: type != pull_request
+      script:
+        - git config --global user.email "builds@travis-ci.com"
+        - git config --global user.name "Travis CI"
+        - export GIT_TAG=$(date +"%y").$(date +"%m" | sed 's/^0*//').$TRAVIS_BUILD_NUMBER
+        - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+        - git push -q "https://${GH_TOKEN}@github.com/New-Edge-Engineering/ansible-packages" --tags
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/?branch=master
