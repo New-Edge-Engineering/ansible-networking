@@ -8,16 +8,12 @@ branches:
     - master
 
 env:
-  jobs:
+  global:
     - secure: "ntp3BBxM1ai7A3lB3Kz1/XIt9Gzh4AlIxp+2gQkLs3A2ZGvUzch2d9yioLYWCIEPKEKcc7AyxuqOgELfD5F4dGQgG+2SRONui/m6NMecr0Rus3zKbAIvu+p9l9POcrTCS78c4GX+msUUdEUc43nb0wmBa32vphCdzHpuay87zjmRN/nUmnMqJvOXfZr2xMBqrjs8pkk86cIXXOnqiwM91aH8z9cwnRp/DUmbgBtcC3nT9JOIfqCJvWe7yfN2NvCxC0lV60wChKm6YDo14A7cPWbDmE6Gbc4/AnRFMHN8xvZ+Iagbthu9SeF4yKVcW6Bqd/v8qEdC+sF5L2hFn3uxw0hWpb9K5gAp6TseX1t6AkUblDirEt2LAUYEKaWW+evU3iOdFEUCI72FfcgdqlGgB0AtY5r5XAED7QP20qdm1rdRRV7U5gtLAfhPOTyo5m4/kxjMHj2vg0YYwD+Pjwq/PVmP902BhQ/6aMpeoVebzaOSmSXpmeUt4rWlN+vAlgxoipBFv0jIZWg+HWJRVDtbmnKWRpAV97FOZZzS2e4cCy93TeoVglegJoODNu13Jdn4C/3s+XwWepu8B4T8Ndmnt9CrtCRvfV1wNiCiGeT25RzPalSKc/LpeAkXz77GLz4fnmCnylrsLWcv4CGlbtzwDBWadwoP0jQyuDK0DFtiSyk=" # contains GH_TOKEN
-  matrix:
+  jobs:
     - MOLECULE_SCENARIO_NAME="centos7"
     - MOLECULE_SCENARIO_NAME="cento6"
     - MOLECULE_SCENARIO_NAME="ubuntu16.04"
-
-matrix:
-  allow_failures:
-    - env: MOLECULE_SCENARIO_NAME="ubuntu16.04"
 
 # before_install:
 install:
@@ -45,6 +41,8 @@ install:
 #     ln -s $TRAVIS_BUILD_DIR $HOME/.ansible/roles/$ROLE
 
 jobs:
+  allow_failures:
+    - env: MOLECULE_SCENARIO_NAME="ubuntu16.04"
   include:
     - stage: test
       script:
