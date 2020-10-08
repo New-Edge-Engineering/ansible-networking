@@ -31,4 +31,3 @@
         that:
           - dhclient_presence.found == 1
           - (networking_domain_name_server_presence|default({'found':0})).found|default(0) == 1 or (resolvconf_presence|default({'found':0})).found|default(0) == 1
-
