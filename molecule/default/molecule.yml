@@ -1,0 +1,42 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+    type: libvirt
+    driver: kvm
+    options:
+      memory: 2048
+      cpus: 2
+
+platforms:
+  - name: instance
+    box: ${MOLECULE_DISTRO_BOX:-""}
+    interfaces:
+      - network_name: public_network
+        dev: "virbr0"
+        type: "bridge"
+        mode: "bridge"
+    provider_raw_config_args:
+      - 'video_type = "virtio"'
+      - 'nic_model_type = "virtio"'
+      - 'disk_bus = "virtio"'
+      - 'volume_cache = "none"'
+      - 'storage :file, bus: "virtio", cache: "none"'    # Dictionary of options passed to the provider
+    provision: no
+
+provisioner:
+  name: ansible
+  log: true
+  options:
+    become: true
+  inventory:
+    group_vars:
+      all:
+        networking_domain_name_server: "192.168.1.1"
+
+verifier:
+  name: ansible

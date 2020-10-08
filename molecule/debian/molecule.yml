@@ -1,8 +1,10 @@
 ---
 dependency:
   name: galaxy
+
 driver:
   name: vagrant
+
 platforms:
   - name: ubuntu16.04  # Xenial
     # Dictionary of `config` options. Note that string values need to be explicitly enclosed in quotes.
@@ -38,15 +40,16 @@ platforms:
   #   # List of raw provider options provider_raw_config_args:
   #   #   - "cpuset = '2'"
   #   provision: no
+
 provisioner:
   name: ansible
   log: true
   options:
     become: true
-    vvv: true
   inventory:
     group_vars:
       all:
         networking_domain_name_server: "192.168.1.1"
+
 verifier:
   name: ansible

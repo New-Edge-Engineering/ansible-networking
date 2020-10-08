@@ -12,20 +12,15 @@
       become: true
       check_mode: true
       register: dhclient_presence
-    - name: find networking_domain_name_server
+    - name: find resolvconf
       lineinfile: 
         dest: "/etc/resolvconf/resolv.conf.d/base"
         regexp: "^nameserver {{ networking_domain_name_server }}$"
         state: absent
       check_mode: true
-      register: networking_domain_name_server_presence
-    - debug:
-        var: dhclient_presence
-    - debug:
-        var: networking_domain_name_server_presence
-    - name: dhclient assertion
+      register: resolvconf_presence
+    - name: verifiction
       assert:
-        that: dhclient_presence.found == 1
-    - name: networking domain name server assertion
-      assert:
-        that: networking_domain_name_server_presence.found == 1
+        that:
+          - dhclient_presence.found == 1
+          - resolvconf_presence.found == 1

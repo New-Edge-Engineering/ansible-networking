@@ -1,0 +1,8 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: "Install libselinux-python"
+      package:
+        name: libselinux-python
+      when: ansible_selinux.status != "enabled" and ansible_os_family == 'RedHat'

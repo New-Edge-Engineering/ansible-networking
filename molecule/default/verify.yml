@@ -19,8 +19,16 @@
         state: absent
       check_mode: true
       register: networking_domain_name_server_presence
-    - name: verifiction
+    - name: find resolvconf
+      lineinfile: 
+        dest: "/etc/resolvconf/resolv.conf.d/base"
+        regexp: "^nameserver {{ networking_domain_name_server }}$"
+        state: absent
+      check_mode: true
+      register: resolvconf_presence
+    - name: verification
       assert:
         that:
           - dhclient_presence.found == 1
-          - networking_domain_name_server_presence.found == 1
+          - (networking_domain_name_server_presence|default({'found':0})).found|default(0) == 1 or (resolvconf_presence|default({'found':0})).found|default(0) == 1
+
